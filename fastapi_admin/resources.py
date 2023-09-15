@@ -1,4 +1,3 @@
-import uuid
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from pydantic import BaseModel, validator

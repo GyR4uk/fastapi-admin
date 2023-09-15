@@ -1,3 +1,4 @@
+import uuid
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from pydantic import BaseModel, validator
@@ -171,7 +172,7 @@ class Model(Resource):
             name = input_.context.get("name")
             if isinstance(input_, inputs.ForeignKey):
                 v = data.getlist(name)[0]
-                ret[name] = int(v) if v else None
+                ret[f"{name}_id"] = cls._check_type(v) if v else None
                 continue
             if isinstance(input_, inputs.ManyToMany):
                 v = data.getlist(name)
@@ -184,6 +185,12 @@ class Model(Resource):
                     continue
                 ret[name] = value
         return ret, m2m_ret
+
+    @classmethod
+    async def _check_type(cls, value: int | str):
+        if isinstance(value, int):
+            return int(value)
+        return str(value)
 
     @classmethod
     async def get_filters(cls, request: Request, values: Optional[dict] = None):
